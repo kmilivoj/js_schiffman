@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>List Data</h1>
+    <div>
+        <a href='index.html'>enter</a> | <a href='/'>list</a>
+    </div>
+    <script>
+        getData();
+        async function getData() {
+            const response = await fetch('/api');
+            const data = await response.json();
+            console.log(data);
+            for (item of data) {
+                const root = document.createElement('div');
+                const city = document.createElement('div');
+                const geo = document.createElement('div');
+                const date = document.createElement('div');
+               
+
+                city.textContent = `city: ${item.city}`;                
+                geo.textContent = `${item.lat}, ${item.lon}`;   
+                const dateString =new Date(item.timestamp).toLocaleString();            
+                date.textContent = dateString;
+                
+
+                root.append(city, geo, date);
+                document.body.append(root);
+            }
+            console.log(data);
+        }
+    </script>
+</body>
+</html>

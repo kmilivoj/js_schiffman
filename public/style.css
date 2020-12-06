@@ -1,0 +1,16 @@
+div {    
+    display: flex;
+    padding: 5px;
+    border: #000000;
+
+    
+
+}
+
+p {
+    
+    padding: 5px;
+    border: #000000;
+    width: 550px;
+    background-color: rgb(156, 132, 223);
+}

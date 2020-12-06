@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js" integrity="sha512-WIklPM6qPCIp6d3fSSr90j+1unQHUOoWDS4sdTiR8gxUTnyZ8S2Mr8e10sKKJ/bhJgpAa/qG068RDkg6fIlNFA==" crossorigin="anonymous"></script>
+   
+    <title>The Weather Here </title>
+        <!-- -Saving input data into obj and local storage and database</title> -->
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js"></script> 
+</head>
+<body>
+
+    <h1>Coordinates of a user</h1>
+    <div>
+        <a href='/'>Check in/</a> | <a href='all.html'> View checkins</a>
+    </div>
+  
+    <p>
+        <!-- latitude: <span id='latitude' ></span>&deg;<br />
+        longitude: <span id='longitude'></span>&deg;<br /> -->
+        <div>
+            
+        </div>
+    <!-- </p>
+    <p> -->
+        The weather here at <span id='latitude' ></span>&deg;, <span id='longitude'></span>&deg; is with <span id="summary"></span> and a temperature of
+            <span id="temperature"></span> &deg C. <br/>The concentration of particulate matter (<span id="aq_parameter"></span>)
+             is <span id="aq_value"></span> <span id="aq_units"></span> <br/>Last read
+             on <span id="aq_date"></span>    
+    </p>
+    
+    
+    <button id="btn">Check in</button>
+   
+    <script>
+
+    function setup() {  
+        console.log('setup()');
+        const button = document.getElementById('btn');
+        let lat, lon;
+        let weather, air;
+        if ('geolocation' in navigator) {
+            console.log('geolocation available');
+            navigator.geolocation.getCurrentPosition(async position => {
+                lat = position.coords.latitude;
+                lon = position.coords.longitude;
+                document.getElementById('latitude').textContent = lat.toFixed(2);
+                document.getElementById('longitude').textContent = lon.toFixed(2);
+
+                const api_url =  `/weather/${lat},${lon}`;
+                const response = await fetch(api_url);
+                
+                const json = await response.json();
+                weather = json.weather;
+
+                // Find any first parameter in measurement  0
+                air = json.air_quality.results[0].measurements[0];
+
+
+                // ************Find specific parameter in results*******************
+                // 
+                // let air_measure = json.air_quality.results[0].measurements[0];
+                // let air = json.air_quality.results[0].measurements[find_pm25()];
+
+                // function find_pm25 (){
+
+                //     for (i = 0; i<air_measure.length; i++) {
+                //         let air_measure_i = json.air_quality.results[0].measurements[i];
+                //         let index = air_measure_i.parameter.includes("pm25");
+                //         if (index){
+                //             console.log(index);
+                //             console.log(i);
+                //             return i; 
+                //         }
+                //     }
+                // }
+
+                
+                console.log(json);
+                document.getElementById('summary').textContent = weather.weather[0].description ;
+                document.getElementById('temperature').textContent = weather.main.temp;
+                document.getElementById('aq_parameter').textContent = air.parameter;
+                document.getElementById('aq_value').textContent = air.value;
+                document.getElementById('aq_units').textContent = air.unit;
+                document.getElementById('aq_date').textContent = air.lastUpdated;
+                
+            });
+
+            // Handle button presses, submit data to database
+            button.addEventListener('click', async event => {
+            // making an object from data received
+            const data = {lat, lon, weather, air };
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            };
+                const db_response = await fetch('/api', options);
+            // .then(response => {
+                const db_json= await db_response.json();
+                console.log(db_json);
+    //             let coordinates=[];
+    // //    
+    //             let coordinate = {
+    //             id: Date.UTC,
+    //             latitude: lat,
+    //             longitude: lon
+    //             }
+
+    //             coordinates.push(coordinate);
+    //             console.warn('added', {coordinates});
+    //             localStorage.setItem('MyCoordinates', JSON.stringify(coordinates));
+            });
+        
+        }else{
+            console.log('geolocation not avaliable');
+        }
+   
+       
+        
+    }
+    </script>
+    
+</body>
+</html>
