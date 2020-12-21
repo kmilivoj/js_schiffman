@@ -8,7 +8,7 @@
     <title>The Weather Here </title>
         <!-- -Saving input data into obj and local storage and database</title> -->
     <link rel="stylesheet" href="style.css">
-    <script src="main.js"></script> 
+    <!-- <script src="main.js"></script>  -->
 </head>
 <body>
 
@@ -37,10 +37,11 @@
     <script>
 
     function setup() {  
-        console.log('setup()');
+        
         const button = document.getElementById('btn');
         let lat, lon;
         let weather, air;
+       
         if ('geolocation' in navigator) {
             console.log('geolocation available');
             navigator.geolocation.getCurrentPosition(async position => {
@@ -54,7 +55,7 @@
                 
                 const json = await response.json();
                 weather = json.weather;
-
+                try {
                 // Find any first parameter in measurement  0
                 air = json.air_quality.results[0].measurements[0];
 
@@ -85,8 +86,13 @@
                 document.getElementById('aq_value').textContent = air.value;
                 document.getElementById('aq_units').textContent = air.unit;
                 document.getElementById('aq_date').textContent = air.lastUpdated;
-                
+            } catch (error) {
+                console.error(error);
+                air = { value: -1 };
+                document.getElementById('aq_value').textContent = 'NO READING';}
             });
+
+    
 
             // Handle button presses, submit data to database
             button.addEventListener('click', async event => {

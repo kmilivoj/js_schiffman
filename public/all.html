@@ -51,6 +51,7 @@
                 
             for (item of data) {
                 var mark = L.marker([item.lat,item.lon]).addTo(mymap);
+                
                 const dateString =new Date(item.air.lastUpdated).toLocaleString('en-GB');            
                 // date.textContent = dateString;
                 const txt = `The weather here in ${item.weather.name} at ${item.lat}&deg;, ${item.lon}&deg; is with ${item.weather.weather[0].description} and a temperature of

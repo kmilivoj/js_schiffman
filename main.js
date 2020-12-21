@@ -84,3 +84,6 @@ app.get('/weather/:latlon', async (request, response)=> {
     response.json(data);
    
 });
+setInterval(async () => {
+    await fetch('https://check-in-and-weather.glitch.me/').then(console.log('Pinged! Wait another 4 minutes...'))
+}, 24000);
